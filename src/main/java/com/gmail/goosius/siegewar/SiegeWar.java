@@ -9,12 +9,16 @@ import com.gmail.goosius.siegewar.settings.Settings;
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.util.Colors;
 import com.palmergames.bukkit.util.Version;
+
+import me.silverwolfg11.maptowny.MapTowny;
+
 import com.gmail.goosius.siegewar.command.SiegeWarAdminCommand;
 import com.gmail.goosius.siegewar.command.SiegeWarCommand;
 import com.gmail.goosius.siegewar.command.SiegeWarNationAddonCommand;
 import com.gmail.goosius.siegewar.hud.SiegeHUDManager;
 import com.gmail.goosius.siegewar.integration.cannons.CannonsIntegration;
 import com.gmail.goosius.siegewar.integration.dynmap.DynmapIntegration;
+import com.gmail.goosius.siegewar.integration.maptowny.MapTownyIntegration;
 import com.gmail.goosius.siegewar.listeners.SiegeWarActionListener;
 import com.gmail.goosius.siegewar.listeners.SiegeWarBukkitEventListener;
 import com.gmail.goosius.siegewar.listeners.SiegeWarNationEventListener;
@@ -115,9 +119,20 @@ public class SiegeWar extends JavaPlugin {
 				}
 			}
 
-			if (getServer().getPluginManager().isPluginEnabled("dynmap")) {
+			// Server is using Dynmap and Dynmap-Towny.
+			if (getServer().getPluginManager().isPluginEnabled("Dynmap-Towny")
+				&& getServer().getPluginManager().isPluginEnabled("dynmap")) {
 				info("SiegeWar found Dynmap plugin, enabling Dynmap support.");
 				new DynmapIntegration(this);
+			}
+			
+			// Server is using MapTowny and one of the supported mappers.
+			if (getServer().getPluginManager().isPluginEnabled("MapTowny") 
+				&& (getServer().getPluginManager().isPluginEnabled("squaremap")
+				|| getServer().getPluginManager().isPluginEnabled("Pl3xMap")
+				|| getServer().getPluginManager().isPluginEnabled("dynmap"))) {
+				info("SiegeWar found MapTowny, enabling MapTowny support");
+				new MapTownyIntegration((MapTowny) getServer().getPluginManager().getPlugin("MapTowny"));
 			}
 		}
 	}
